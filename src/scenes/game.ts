@@ -2,15 +2,18 @@ import type kaplay from "kaplay";
 import { DISPLAY_SCALE } from "../config";
 import { spawnPlayer } from "../entities/player";
 import { spawnTiledLevel, type TiledMap, type TiledTileset } from "../level/tiled-loader";
+import level01MapJson from "../maps/level-01.json";
+import tilesetJson from "../maps/tileset.json";
 
 type K = ReturnType<typeof kaplay>;
+
+const mapData = level01MapJson as unknown as TiledMap;
+const tilesetData = tilesetJson as unknown as TiledTileset;
 
 export function registerGameScene(k: K) {
   k.scene("game", () => {
     k.setGravity(1800);
 
-    const mapData    = k.getAsset("level-01-map")!.data    as TiledMap;
-    const tilesetData = k.getAsset("level-01-tileset")!.data as TiledTileset;
     const { mapWidth, mapHeight } = spawnTiledLevel(k, mapData, tilesetData);
 
     // Spawn player in the open upper-left area of the cave.
