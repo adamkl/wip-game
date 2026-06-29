@@ -36,9 +36,6 @@ k.loadSpriteAtlas("sprites/spritesheet.png", {
   tile_wall:  { x: 8,  y: 56, width: 8,  height: 8 },
 });
 
-k.loadJSON("level-01-map", "maps/level-01.tmj");
-k.loadJSON("level-01-tileset", "maps/tileset.tsj");
-
 registerProofScene(k);
 registerGameScene(k);
 k.go("game");
