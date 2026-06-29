@@ -1,31 +1,30 @@
 import type kaplay from "kaplay";
-import { DISPLAY_SCALE, GRAVITY, TILE_SIZE } from "../config";
+import { DISPLAY_SCALE } from "../config";
 import { spawnPlayer } from "../entities/player";
+import { spawnTiledLevel, type TiledMap, type TiledTileset } from "../level/tiled-loader";
 
 type K = ReturnType<typeof kaplay>;
 
 export function registerGameScene(k: K) {
   k.scene("game", () => {
-    k.setGravity(GRAVITY);
+    k.setGravity(1800);
 
-    // Temporary floor — replaced by Tiled level geometry in feat/level-01.
-    k.add([
-      k.pos(0, k.height() - TILE_SIZE),
-      k.rect(k.width(), TILE_SIZE),
-      k.area(),
-      k.body({ isStatic: true }),
-      k.color(k.Color.fromHex("#ab5236")),
-    ]);
+    const mapData    = k.getAsset("level-01-map")!.data    as TiledMap;
+    const tilesetData = k.getAsset("level-01-tileset")!.data as TiledTileset;
+    const { mapWidth, mapHeight } = spawnTiledLevel(k, mapData, tilesetData);
 
-    // Spawn player at PICO-8 origin (64, 64) scaled to world coords.
+    // Spawn player in the open upper-left area of the cave.
     const player = spawnPlayer(k, 64 * DISPLAY_SCALE, 64 * DISPLAY_SCALE);
 
-    // Camera follows player (clamped to world bounds).
+    // Camera follows player, clamped to map bounds.
+    // When a map dimension fits inside the canvas, centre on that axis.
     k.onUpdate(() => {
       const hw = k.width()  / 2;
       const hh = k.height() / 2;
-      const cx = k.clamp(player.pos.x + (8 * DISPLAY_SCALE) / 2, hw, k.width()  - hw);
-      const cy = k.clamp(player.pos.y + (8 * DISPLAY_SCALE) / 2, hh, k.height() - hh);
+      const playerCx = player.pos.x + (8 * DISPLAY_SCALE) / 2;
+      const playerCy = player.pos.y + (8 * DISPLAY_SCALE) / 2;
+      const cx = mapWidth  > k.width()  ? k.clamp(playerCx, hw, mapWidth  - hw) : mapWidth  / 2;
+      const cy = mapHeight > k.height() ? k.clamp(playerCy, hh, mapHeight - hh) : mapHeight / 2;
       k.camPos(cx, cy);
     });
   });
