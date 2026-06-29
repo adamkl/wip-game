@@ -6,6 +6,7 @@ import {
   MOVE_FRICTION,
   MOVE_SPEED,
 } from "../config";
+import { createTouchControls } from "../input/touch-controls";
 
 type K = ReturnType<typeof kaplay>;
 
@@ -37,11 +38,15 @@ export function spawnPlayer(k: K, x: number, y: number) {
     "player",
   ]);
 
+  const touch = createTouchControls(() => {
+    if (player.isGrounded()) player.jump();
+  });
+
   // Horizontal movement and friction via vel.x — body() applies it to pos each frame.
   k.onUpdate(() => {
     const dt = k.dt();
-    const goLeft  = k.isKeyDown("left")  || k.isKeyDown("a");
-    const goRight = k.isKeyDown("right") || k.isKeyDown("d");
+    const goLeft  = k.isKeyDown("left")  || k.isKeyDown("a") || touch.left;
+    const goRight = k.isKeyDown("right") || k.isKeyDown("d") || touch.right;
 
     if (goLeft) {
       player.vel.x = Math.max(player.vel.x - MOVE_ACCEL * dt, -MOVE_SPEED);

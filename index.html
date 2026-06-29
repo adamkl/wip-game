@@ -7,9 +7,47 @@
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { background: #000; display: flex; justify-content: center; align-items: center; height: 100vh; }
+
+      #touch-controls {
+        position: fixed;
+        inset: 0;
+        display: none;
+        pointer-events: none;
+        z-index: 10;
+      }
+      @media (hover: none) and (pointer: coarse) {
+        #touch-controls { display: block; }
+      }
+      .touch-btn {
+        position: absolute;
+        bottom: 28px;
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.18);
+        color: #fff;
+        font-size: 28px;
+        font-family: sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: none;
+        pointer-events: auto;
+      }
+      .touch-btn:active { background: rgba(255, 255, 255, 0.32); }
+      #touch-left  { left: 28px; }
+      #touch-right { left: 104px; }
+      #touch-jump  { right: 28px; }
     </style>
   </head>
   <body>
+    <div id="touch-controls">
+      <div class="touch-btn" id="touch-left">◀</div>
+      <div class="touch-btn" id="touch-right">▶</div>
+      <div class="touch-btn" id="touch-jump">⤒</div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
