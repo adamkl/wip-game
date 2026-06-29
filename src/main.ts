@@ -1,4 +1,5 @@
 import kaplay from "kaplay";
+import { registerGameScene } from "./scenes/game";
 import { registerProofScene } from "./scenes/proof";
 
 const k = kaplay({
@@ -32,4 +33,5 @@ k.loadSpriteAtlas("/sprites/spritesheet.png", {
 });
 
 registerProofScene(k);
-k.go("proof");
+registerGameScene(k);
+k.go("game");
