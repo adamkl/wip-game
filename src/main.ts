@@ -11,6 +11,10 @@ const k = kaplay({
   debug: true,
 });
 
+// Prefix all asset loads with Vite's base path so they resolve correctly
+// whether the app is served from / (dev) or /wip-game/ (GitHub Pages).
+k.loadRoot(import.meta.env.BASE_URL);
+
 // Sprite sheet is 128×128; each sprite is 8×8 px at indices on a 16-column grid.
 // Sprite n → x = (n % 16) * 8, y = floor(n / 16) * 8
 //
@@ -21,7 +25,7 @@ const k = kaplay({
 //
 // Tiles (sprite row 7, at y=56):
 //   tile_block: sprite 112   tile_wall: sprite 113
-k.loadSpriteAtlas("/sprites/spritesheet.png", {
+k.loadSpriteAtlas("sprites/spritesheet.png", {
   char1:      { x: 8,  y: 0,  width: 16, height: 8, sliceX: 2, anims: { idle: 0, run: { from: 0, to: 1, loop: true, speed: 8 } } },
   char2:      { x: 24, y: 0,  width: 8,  height: 8 },
   char3:      { x: 32, y: 0,  width: 8,  height: 8 },
@@ -32,8 +36,8 @@ k.loadSpriteAtlas("/sprites/spritesheet.png", {
   tile_wall:  { x: 8,  y: 56, width: 8,  height: 8 },
 });
 
-k.loadJSON("level-01-map", "/maps/level-01.tmj");
-k.loadJSON("level-01-tileset", "/maps/tileset.tsj");
+k.loadJSON("level-01-map", "maps/level-01.tmj");
+k.loadJSON("level-01-tileset", "maps/tileset.tsj");
 
 registerProofScene(k);
 registerGameScene(k);
