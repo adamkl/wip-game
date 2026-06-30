@@ -1,13 +1,15 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+context: |
+  Tech stack: Vite + TypeScript + Kaplay (pixel-art game framework)
+  Deployment: GitHub Pages at /wip-game/ (Vite base path set via GITHUB_ACTIONS env var)
+  Canvas: 512×512 px, letterboxed, crisp pixel rendering
+  Coordinate system: 1 PICO-8 pixel = 4 world units (DISPLAY_SCALE = 4). All sprites use scale(4), rendering as 32×32 in world space.
+  Physics constants (src/config.ts): GRAVITY=1800 wu/s², JUMP_FORCE=720 wu/s, MOVE_SPEED=300 wu/s, MOVE_ACCEL=1800 wu/s², MOVE_FRICTION=540 wu/s²
+  Sprite sheet: public/sprites/spritesheet.png (128×128, 8×8 px sprites on a 16-column grid). 6 player characters (row 0), 2 tile types (row 7).
+  Level format: Tiled JSON maps in src/maps/, bundled into JS at build time via ES module imports. Solid tiles identified by solid:true property in tileset.
+  Touch controls: on-screen buttons shown via @media (hover: none) and (pointer: coarse). Pointer Events API drives held-state (left/right) and one-shot (jump).
+  Commits follow conventional commits style. No Claude session URLs in commits or PRs.
 
 # Per-artifact rules (optional)
 # Add custom rules for specific artifacts.
