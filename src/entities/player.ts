@@ -50,10 +50,10 @@ export function spawnPlayer(k: K, x: number, y: number) {
 
     if (goLeft) {
       player.vel.x = Math.max(player.vel.x - MOVE_ACCEL * dt, -MOVE_SPEED);
-      player.flipX = true;
+      player.flipX = false;
     } else if (goRight) {
       player.vel.x = Math.min(player.vel.x + MOVE_ACCEL * dt, MOVE_SPEED);
-      player.flipX = false;
+      player.flipX = true;
     } else if (player.isGrounded()) {
       const decel = MOVE_FRICTION * dt;
       if (Math.abs(player.vel.x) <= decel) {
