@@ -1,5 +1,5 @@
 import type kaplay from "kaplay";
-import { DISPLAY_SCALE } from "../config";
+import { DISPLAY_SCALE, GRAVITY } from "../config";
 import { spawnPlayer } from "../entities/player";
 import { spawnTiledLevel, type TiledMap, type TiledTileset } from "../level/tiled-loader";
 import level01MapJson from "../maps/level-01.json";
@@ -12,7 +12,7 @@ const tilesetData = tilesetJson as unknown as TiledTileset;
 
 export function registerGameScene(k: K) {
   k.scene("game", () => {
-    k.setGravity(1800);
+    k.setGravity(GRAVITY);
 
     const { mapWidth, mapHeight } = spawnTiledLevel(k, mapData, tilesetData);
 
