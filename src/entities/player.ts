@@ -17,21 +17,31 @@ export function spawnPlayer(k: K, x: number, y: number) {
     k.sprite("char1", { anim: "stand" }),
     k.pos(x, y),
     k.scale(DISPLAY_SCALE),
-    k.area(),
+    // Inset from the full 8×8 sprite frame to match the original's bbox collision
+    // points (left=1, right=6, top=0, bottom=7) — the sprite's visible art has the
+    // same margin, so this keeps the player visually flush against solid tiles.
+    k.area({ shape: new k.Rect(k.vec2(1, 0), 5, 7) }),
     k.body({ jumpForce: JUMP_FORCE }),
     k.anchor("topleft"),
     "player",
   ]);
 
-  // Wall contact, tracked independently of body()'s ground state — mirrors how
-  // body() itself tracks curPlatform via collision events.
-  let onWall = false;
+  // Wall side contact, refreshed every physics tick via collision events and
+  // consumed (then re-derived) each onUpdate frame — see onWall below. This is
+  // "am I currently overlapping a wall on this side", independent of input.
+  let touchWallLeft = false;
+  let touchWallRight = false;
   player.onCollideUpdate((obj, col) => {
-    if (obj.is("tile") && (col?.isLeft() || col?.isRight())) onWall = true;
+    if (!obj.is("tile")) return;
+    if (col?.isLeft()) touchWallLeft = true;
+    if (col?.isRight()) touchWallRight = true;
   });
-  player.onCollideEnd("tile", () => {
-    onWall = false;
-  });
+
+  // Recomputed fresh every onUpdate frame in the loop below — touching a wall
+  // alone isn't enough, the player must also be actively holding the direction
+  // into that wall (matches the original: contact is re-probed by movement,
+  // not persisted, so releasing the key drops it immediately).
+  let onWall = false;
 
   const doJump = () => {
     if (onWall && player.vel.y > 0) {
@@ -49,6 +59,13 @@ export function spawnPlayer(k: K, x: number, y: number) {
     const dt = k.dt();
     const goLeft  = k.isKeyDown("left")  || k.isKeyDown("a") || touch.left;
     const goRight = k.isKeyDown("right") || k.isKeyDown("d") || touch.right;
+
+    // Wall contact requires actively pressing into the touching side this frame —
+    // re-derived from scratch every tick, not a sticky flag. Consume this frame's
+    // collision signal, then reset it so next frame needs a fresh touch event.
+    onWall = (touchWallLeft && goLeft) || (touchWallRight && goRight);
+    touchWallLeft = false;
+    touchWallRight = false;
 
     if (goLeft) {
       player.vel.x = Math.max(player.vel.x - MOVE_ACCEL * dt, -MOVE_SPEED);
