@@ -4,15 +4,23 @@
 Defines wall contact tracking and the wall-slide/wall-jump mechanics it enables: reduced fall speed while pressed against a wall, and a directional launch off the wall on jump input.
 ## Requirements
 ### Requirement: Wall contact is tracked independently of ground contact
-The player SHALL track an `on_wall` state, set true while the player's collision area overlaps a solid tile on its left or right side, and cleared the instant that contact ends. This is independent of `on_ground` — a player can be grounded, wall-touching, both, or neither.
+The player SHALL track an `on_wall` state, recomputed every frame as true only while both: (a) the player's collision area overlaps a solid tile on its left or right side, and (b) the player is actively holding the directional input toward that side. `on_wall` becomes false the instant either condition stops holding — including when the player releases the directional key while still physically touching the wall. This is independent of `on_ground` — a player can be grounded, wall-touching, both, or neither.
 
-#### Scenario: Touching a wall while airborne
-- **WHEN** the player's side collides with a solid tile while airborne
+#### Scenario: Touching a wall while actively pressing into it
+- **WHEN** the player's side collides with a solid tile while airborne and the player is holding the direction key toward that wall
 - **THEN** `on_wall` becomes true
+
+#### Scenario: Releasing the direction key while still touching the wall
+- **WHEN** the player is touching a wall and `on_wall` is true, and the player releases the directional key toward that wall (with no opposite key held)
+- **THEN** `on_wall` becomes false immediately, even though the player has not physically separated from the wall
 
 #### Scenario: Leaving wall contact
 - **WHEN** the player is no longer overlapping the wall on that side
 - **THEN** `on_wall` becomes false immediately
+
+#### Scenario: Pressing away from a wall while still touching it
+- **WHEN** the player is touching a wall on one side and holds the directional key toward the opposite side
+- **THEN** `on_wall` is false (or becomes false), since input is not directed toward the touching side
 
 ### Requirement: Wall-slide reduces fall speed while pressed against a wall
 While `on_wall` is true and the player is falling (`vel.y > 0`), gravity SHALL be scaled to WALL_SLIDE_GRAVITY_MULT (0.2×) of normal, producing a slow slide down the wall face instead of a free fall. Gravity returns to normal (1×) the instant either condition is no longer true.
