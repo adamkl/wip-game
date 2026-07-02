@@ -31,7 +31,7 @@ MOVE_FRICTION (540 wu/s²) SHALL be applied to decelerate the player whenever no
 - **THEN** velocity is set to exactly zero (no oscillation)
 
 ### Requirement: Jump
-The player SHALL jump when space or Z is pressed while grounded, receiving an upward velocity of JUMP_FORCE (540 wu/s). Mid-air jump presses are ignored unless the wall-jump condition applies (see the `wall-jump` capability). GRAVITY (3300 wu/s²) is unchanged from prior tuning.
+The player SHALL jump when space or Z is pressed while grounded, receiving an upward velocity of JUMP_FORCE (540 wu/s). Mid-air jump presses are ignored unless the wall-jump condition applies (see the `wall-jump` capability). GRAVITY (1800 wu/s²) is the literal 30fps conversion of the source's `world.g=0.5` — no empirical correction is needed once JUMP_FORCE is derived from the correct source revision.
 
 #### Scenario: Jump while grounded
 - **WHEN** space or Z is pressed and the player is grounded
@@ -43,7 +43,7 @@ The player SHALL jump when space or Z is pressed while grounded, receiving an up
 
 #### Scenario: Jump peak height matches the original
 - **WHEN** the player jumps from a grounded, unobstructed position
-- **THEN** the peak height reached is approximately 39 world units above the starting position (peak height scales with JUMP_FORCE², not linearly — simulated against Kaplay's actual discrete 50Hz physics tick with JUMP_FORCE=540 and GRAVITY=3300, within normal frame-timing variance)
+- **THEN** the peak height reached is approximately 75 world units above the starting position (simulated against Kaplay's actual discrete 50Hz physics tick with JUMP_FORCE=540 and GRAVITY=1800; measured live via a scripted keyboard jump at 75.99 world units), matching the original PICO-8 cart's measured ~71 world-unit jump height within normal frame-timing variance
 
 ### Requirement: Sprite faces direction of travel
 The player sprite SHALL be horizontally mirrored (flipX) to face in the direction the player is moving. The default sprite faces left, so flipX is set to true when moving right.
