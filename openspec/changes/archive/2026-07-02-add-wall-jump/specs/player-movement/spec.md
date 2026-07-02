@@ -42,16 +42,7 @@ The player SHALL jump when space or Z is pressed while grounded, receiving an up
 - **WHEN** the player jumps from a grounded, unobstructed position
 - **THEN** the peak height reached is approximately 39 world units above the starting position (peak height scales with JUMP_FORCE², not linearly — simulated against Kaplay's actual discrete 50Hz physics tick with JUMP_FORCE=540 and GRAVITY=3300, within normal frame-timing variance)
 
-### Requirement: Sprite faces direction of travel
-The player sprite SHALL be horizontally mirrored (flipX) to face in the direction the player is moving. The default sprite faces left, so flipX is set to true when moving right.
-
-#### Scenario: Facing right
-- **WHEN** the player is moving right (positive velocity)
-- **THEN** player.flipX is true
-
-#### Scenario: Facing left
-- **WHEN** the player is moving left (negative velocity)
-- **THEN** player.flipX is false
+## ADDED Requirements
 
 ### Requirement: Animation reflects physics state
 The player SHALL play one of four animation states based on current physics state, in priority order: wall-slide (on_wall and falling) takes priority over airborne (jump), which takes priority over grounded states. While grounded, the player shows a run animation if moving horizontally, or a stand (idle) animation if still.
