@@ -6,11 +6,14 @@ export const DISPLAY_SCALE   = 4;
 
 export const TILE_SIZE        = 8 * DISPLAY_SCALE;   // 32
 
-// GRAVITY is empirically tuned (not a literal 30fps conversion): the deployed
-// original cart's jump peak, measured from video, is ~half what the 30fps-literal
-// value below would produce — its web export appears to run _update() at ~60fps,
-// so gravity accumulates twice as fast per second as the source constants assume.
-export const GRAVITY          = 3300;                        // world units/s² (30fps-literal conversion would be 1800)
+// GRAVITY follows the same literal 30fps-formula pattern as every other constant
+// here (world.g × DISPLAY_SCALE × 30² = 0.5 × 4 × 900). A prior "~60fps web export"
+// empirical tuning (GRAVITY=3300) turned out to be an artifact of comparing against
+// a pre-wall-jump revision of the source cart (a_jump=-6) instead of the deployed
+// one (a_jump=-4.5, see JUMP_FORCE below) — once JUMP_FORCE matches the real source,
+// the literal formula already lands within measurement noise of the original's
+// on-screen jump height, with no engine-timing correction needed.
+export const GRAVITY          = 1800;                         // world units/s²
 export const JUMP_FORCE       = 4.5  * DISPLAY_SCALE * 30;   // 540  world units/s (was 6/720 pre-wall-jump; a_jump not tick-rate-sensitive, formula still valid)
 export const MOVE_SPEED       = 2.5  * DISPLAY_SCALE * 30;   // 300  world units/s
 // MOVE_ACCEL is ratio-scaled (0.8x, matching the source's a_run 0.5->0.4) off the
